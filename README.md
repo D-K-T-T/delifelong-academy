@@ -1,1 +1,0 @@
-# delifelong-academy

@@ -12,15 +12,16 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-env"]
+            presets: ["@babel/preset-env", "@babel/preset-react"]
           }
         }
       },
+
       {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, "css-loader"]
@@ -48,5 +49,8 @@ module.exports = {
     port: 9000,
     open: true, // This will open the browser automatically
     historyApiFallback: true // This is for SPA routing
+  },
+  resolve: {
+    extensions: [".js", ".jsx"]
   }
 };

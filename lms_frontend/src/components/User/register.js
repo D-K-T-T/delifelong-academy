@@ -1,19 +1,26 @@
 import { Link } from "react-router-dom";
 import React from "react";
 
-function Login() {
+function Register() {
   return (
     <div classNam="conetainer mt-4">
       <div className="row">
         <div className="col-6 offset-3">
           <div className="card">
-            <h5 className="card-header">User Login</h5>
+            <h5 className="card-header">User Register</h5>
             <div className="card-body">
               <form>
                 <div className="mb-3">
                   <label for="exampleInputEmail1" className="form-label">
                     {" "}
-                    Username
+                    Full Name
+                  </label>
+                  <input type="email" className="form-control" />
+                </div>
+                <div className="mb-3">
+                  <label for="exampleInputEmail1" className="form-label">
+                    {" "}
+                    Email
                   </label>
                   <input type="email" className="form-control" />
                 </div>
@@ -27,6 +34,13 @@ function Login() {
                     id="exampleInputPassword1"
                   />
                 </div>
+                <div className="mb-3">
+                  <label for="exampleInputEmail1" className="form-label">
+                    {" "}
+                    Interests
+                  </label>
+                  <textarea className="form-control"></textarea>
+                </div>
                 <button type="submit" className="btn btn-primary">
                   Login
                 </button>
@@ -38,4 +52,4 @@ function Login() {
     </div>
   );
 }
-export default Login;
+export default Register;

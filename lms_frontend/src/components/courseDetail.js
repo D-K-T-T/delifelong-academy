@@ -16,8 +16,7 @@ function CourseDetail() {
             HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
           </p>
           <p className="fw-bold">
-            Course By:<a href="#">Teacher 1</a>
-          </p>
+            Course By:<Link to ="/teacher-detail/1">Teacher 1</Link></p>
           <p className="fw-bold"> Rating: 4.5/5</p>
         </div>
       </div>

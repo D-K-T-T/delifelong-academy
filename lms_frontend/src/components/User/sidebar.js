@@ -13,7 +13,6 @@ function Sidebar(){
                     <Link to="/user-login" className="list-group-item list-group-item-action text-danger">Logout</Link>
                 </div>
             </div>
-
     )
 }
 

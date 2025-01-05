@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
-import Sidebar from "./sidebar";
+import TeacherSidebar from "./teacherSidebar";
 import React from "react";
-function ProfileSetting() {
+function TeacherProfileSetting() {
     return (
       <div classNam="container mt-4">
         <div className="row">
           <aside className="col-md-3">
-              <Sidebar />
+              <TeacherSidebar />
           </aside>
           <section className="col-md-9">
             <div className="card">
@@ -46,5 +46,5 @@ function ProfileSetting() {
       </div>
     );
   }
-  export default  ProfileSetting;
+  export default  TeacherProfileSetting;
   

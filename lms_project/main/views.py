@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from rest_framework import permissions
-from .serializers import TeacherSerializer
+from .serializers import TeacherSerializer, QuizSerializer,ResourceSerializer
 from . import models
+from .models import Quiz, Question, Teacher, StudentQuizResult, Resource
 
 
 
@@ -22,5 +23,26 @@ class TeacherDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class=TeacherSerializer
     permission_classes=[permissions.IsAuthenticated]
 
+class QuizList(generics.ListCreateAPIView):
+    queryset = Quiz.objects.all()
+    serializer_class = QuizSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
+class QuizDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Quiz.objects.all()
+    serializer_class = QuizSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class ResourceRecommendation(generics.GenericAPIView):
+    def get(self, request):
+        # Placeholder AI recommendation logic
+        return Response({
+            "resources": ["Resource 1", "Resource 2", "Resource 3"]
+        })
+
+
+class ResourceViewSet(viewsets.ModelViewSet):
+    queryset = Resource.objects.all()  # Fetch all resources
+    serializer_class = ResourceSerializer  # Use the serializer for this model

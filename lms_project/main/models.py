@@ -44,4 +44,48 @@ class Student(models.Model):
     interested_categories=models.TextField()
     class Meta:
         verbose_name_plural="4. Students"
+
+class Question(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    text = models.TextField()
+    difficulty = models.CharField(max_length=50)  # easy, medium, hard
+
+    class Meta:
+        verbose_name_plural = "5. Questions"
+
+
+class Quiz(models.Model):
+    title = models.CharField(max_length=150)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    questions = models.ManyToManyField(Question)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "6. Quizzes"
+
+
+class StudentQuizResult(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    score = models.DecimalField(max_digits=5, decimal_places=2)
+    feedback = models.TextField(blank=True)  # Adaptive AI or teacher feedback
+    completed_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        verbose_name_plural = "7. Student Quiz Results"
+
+
+
+class Resource(models.Model):
+    title = models.CharField(max_length=255)  # Title of the resource
+    description = models.TextField()  # Detailed description
+    level = models.CharField(max_length=50, choices=[("Beginner", "Beginner"), ("Intermediate", "Intermediate"), ("Advanced", "Advanced")])  # Difficulty level
+    content_url = models.URLField()  # URL pointing to the resource content
+    tags = models.CharField(max_length=255, blank=True)  # Optional tags for categorization (comma-separated)
+    created_at = models.DateTimeField(auto_now_add=True)  # Timestamp for when the resource was added
+    updated_at = models.DateTimeField(auto_now=True)  # Timestamp for last modification
+
+    def __str__(self):
+        return self.title
+
    

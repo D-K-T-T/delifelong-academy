@@ -40,6 +40,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'main',
     'rest_framework',
+    'rest_framework_simplejwt',
     'rest_framework.authtoken',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.staticfiles',
     'django.contrib.messages',
+
     
 ]
 
@@ -83,6 +85,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'lms_project.wsgi.application'
 
 
+
+
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -91,11 +96,12 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'django_lms',
         'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '172.18.48.1',
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': '127.0.0.1',
         'PORT': '3306',
     }
 }
+
 
 
 
@@ -119,8 +125,12 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-    ]
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
 }
 
 # Internationalization

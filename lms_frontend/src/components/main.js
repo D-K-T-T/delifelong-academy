@@ -5,7 +5,7 @@ import Footer from "./footer";
 import About from "./about";
 import CourseDetail from "./courseDetail";
 import TeacherDetail from "./Teacher/teacherDetail";
-
+import AllCourses from "./allCourses";
 //Users
 import Login from "./User/login";
 import Register from "./User/register";
@@ -24,6 +24,7 @@ import TeacherCourses from "./Teacher/teacherCourses";
 import TeacherProfileSetting from "./Teacher/teacherProfileSetting";
 import AddCourse from "./Teacher/addCourse";
 import UserList from "./Teacher/userList";
+
 
 import { Routes as Switch, Route } from "react-router-dom";
 function Main() {
@@ -50,6 +51,7 @@ function Main() {
         <Route path="/teacher-profile-setting" element={<TeacherProfileSetting/>} />
         <Route path="/teacher-change-password" element={<TeacherChangePassword />} />
         <Route path="/teacher-detail/:teacher_id" element={<TeacherDetail />} />
+        <Route path="/all-courses" element={<AllCourses />} />
 
 
 

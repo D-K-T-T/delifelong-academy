@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics, viewsets
 from rest_framework import permissions
-from .serializers import TeacherSerializer, QuizSerializer,ResourceSerializer
+from .serializers import TeacherSerializer, QuizSerializer,ResourceSerializer,QuestionSerializer
 from . import models
 from .models import Quiz, Question, Teacher, StudentQuizResult, Resource
 
@@ -23,16 +23,28 @@ class TeacherDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class=TeacherSerializer
     permission_classes=[permissions.IsAuthenticated]
 
-class QuizList(generics.ListCreateAPIView):
+# class QuizList(generics.ListCreateAPIView):
+#     queryset = Quiz.objects.all()
+#     serializer_class = QuizSerializer
+#     permission_classes = [permissions.IsAuthenticated]
+
+
+# class QuizDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Quiz.objects.all()
+#     serializer_class = QuizSerializer
+#     permission_classes = [permissions.IsAuthenticated]
+
+class QuizViewSet(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
-class QuizDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Quiz.objects.all()
-    serializer_class = QuizSerializer
-    permission_classes = [permissions.IsAuthenticated]
+
+
+class QuestionViewSet(viewsets.ModelViewSet):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
 
 
 class ResourceRecommendation(generics.GenericAPIView):
@@ -46,3 +58,4 @@ class ResourceRecommendation(generics.GenericAPIView):
 class ResourceViewSet(viewsets.ModelViewSet):
     queryset = Resource.objects.all()  # Fetch all resources
     serializer_class = ResourceSerializer  # Use the serializer for this model
+

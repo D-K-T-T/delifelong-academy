@@ -1,10 +1,13 @@
 from django.urls import path, include
 from . import views 
-from .views import ResourceViewSet
+from .views import ResourceViewSet, QuestionViewSet,QuizViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'resources', ResourceViewSet) 
+router.register(r'quizzes', QuizViewSet)  
+router.register(r'questions', QuestionViewSet)
+
 
 
 urlpatterns=[

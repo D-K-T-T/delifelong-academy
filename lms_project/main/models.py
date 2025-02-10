@@ -49,6 +49,8 @@ class Question(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     text = models.TextField()
     difficulty = models.CharField(max_length=50)  # easy, medium, hard
+    answer = models.TextField(default="N/A")  
+
 
     class Meta:
         verbose_name_plural = "5. Questions"
@@ -77,6 +79,18 @@ class StudentQuizResult(models.Model):
 
 
 class Resource(models.Model):
+
+    RESOURCE_TYPES = [
+        ("video", "Video"),
+        ("article", "Article"),
+        ("quiz", "Quiz"),
+        ("assignment", "Assignment"),
+    ]
+
+    VISIBILITY_OPTIONS = [
+        ("private", "Private"),
+        ("assigned", "Assigned"),
+    ]
     title = models.CharField(max_length=255)  # Title of the resource
     description = models.TextField()  # Detailed description
     level = models.CharField(max_length=50, choices=[("Beginner", "Beginner"), ("Intermediate", "Intermediate"), ("Advanced", "Advanced")])  # Difficulty level
@@ -84,8 +98,30 @@ class Resource(models.Model):
     tags = models.CharField(max_length=255, blank=True)  # Optional tags for categorization (comma-separated)
     created_at = models.DateTimeField(auto_now_add=True)  # Timestamp for when the resource was added
     updated_at = models.DateTimeField(auto_now=True)  # Timestamp for last modification
+    resource_type = models.CharField(max_length=20, choices=RESOURCE_TYPES, default="article")
+    is_completed = models.BooleanField(default=False)
+    visibility = models.CharField(max_length=10, choices=VISIBILITY_OPTIONS, default="private")
+    courses = models.ManyToManyField('Course', related_name="resources") 
 
-    def __str__(self):
-        return self.title
+    # def __str__(self):
+    #     return self.title
+    class Meta:
+        verbose_name_plural = "7. Resources"
+    
 
    
+class StudentProgress(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+    is_completed = models.BooleanField(default=False)
+    score = models.FloatField(null=True, blank=True)  # Store quiz scores if applicable
+    assigned_by_teacher = models.BooleanField(default=False)  # If manually assigned
+    progress = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)  # Percentage completion
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.student.full_name} - {self.resource.title}"
+
+
+    # class Meta:
+    #     verbose_name_plural = "Student Progress"

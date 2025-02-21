@@ -17,8 +17,19 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = False  # Set this to False when using specific origins
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:9000",  # Allow frontend to access backend
+    "http://127.0.0.1:9000",
+
+]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:9000",
+    "http://127.0.0.1:9000",
+]
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 FRONTEND_DIR = os.path.abspath(os.path.join(BASE_DIR, '..', 'lms_frontend'))
 
@@ -43,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
     'django.contrib.admin',
+    'corsheaders',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -53,13 +65,20 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+AUTHENTICATION_BACKENDS = [
+    'main.auth_backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',  # Keep default backend as fallback
 ]
 
 ROOT_URLCONF = 'lms_project.urls'
@@ -125,7 +144,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
@@ -158,4 +177,5 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 

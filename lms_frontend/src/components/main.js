@@ -6,6 +6,7 @@ import About from "./about";
 import CourseDetail from "./courseDetail";
 import TeacherDetail from "./Teacher/teacherDetail";
 import AllCourses from "./allCourses";
+import RegisterChoice from "./registerChoice";
 //Users
 import Login from "./User/login";
 import Register from "./User/register";
@@ -26,12 +27,13 @@ import AddCourse from "./Teacher/addCourse";
 import UserList from "./Teacher/userList";
 
 
-import { Routes as Switch, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 function Main() {
   return (
     <div className="App">
       <Header />
-      <Switch>
+      <Routes>
+        <Route path="/register" element={<RegisterChoice />} />
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/detail/:course_id" element={<CourseDetail />} />
@@ -55,7 +57,7 @@ function Main() {
 
 
 
-      </Switch>
+      </Routes>
       <Footer />
     </div>
   );

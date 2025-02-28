@@ -1,30 +1,53 @@
-
 // import React, { useState } from "react";
+// import { useNavigate, Link } from "react-router-dom";
 
 // function TeacherLogin() {
-//     const [email, setEmail] = useState("");
-//     const [password, setPassword] = useState("");
+//     const [formData, setFormData] = useState({ email: "", password: "" });
+//     const [loading, setLoading] = useState(false);
+//     const navigate = useNavigate();
 
-//     const handleLogin = (event) => {
-//         event.preventDefault();
+//     const handleLogin = async (e) => {
+//         e.preventDefault();
+//         setLoading(true);
+        
+//         try {
+//             console.log('1. Attempting login with:', { email: formData.email, password: '***' });
+            
+//             const response = await fetch("http://127.0.0.1:8000/api/auth/teacher-login/", {
+//                 method: "POST",
+//                 headers: {
+//                     "Content-Type": "application/json",
+//                     "Accept": "application/json"
+//                 },
+//                 credentials: 'include',
+//                 body: JSON.stringify(formData),
+//             });
 
-//         fetch("http://127.0.0.1:8000/api/auth/teacher-login/", {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json",
-//             },
-//             body: JSON.stringify({ email, password }),
-//         })
-//         .then((response) => response.json())
-//         .then((data) => {
-//             if (data.token) {
+//             const data = await response.json();
+//             console.log('2. Server response:', JSON.stringify(data, null, 2));
+
+//             if (response.ok && data.token) {
+//                 console.log('3. Login successful, storing data');
+//                 // Store auth data
 //                 localStorage.setItem("token", data.token);
-//                 window.location.href = "dashboard";
+//                 localStorage.setItem("user", JSON.stringify({
+//                     id: data.user_id,
+//                     email: data.email,
+//                     is_staff: data.is_staff
+//                 }));
+
+//                 console.log('4. Data stored, navigating...');
+//                 // Use window.location.replace for full page reload
+//                 window.location.replace('/teacher-dashboard');
 //             } else {
-//                 alert("Login failed. Check your credentials.");
+//                 throw new Error(data.error || 'Login failed');
 //             }
-//         })
-//         .catch(error => console.error("Login error:", error));
+//         } catch (error) {
+//             console.error("Login error:", error);
+//             alert(error.message);
+//         } finally {
+//             setLoading(false);
+//         }
 //     };
 
 //     return (
@@ -32,20 +55,180 @@
 //             <div className="row">
 //                 <div className="col-6 offset-3">
 //                     <div className="card">
-//                         <h5 className="card-header">Teacher Login/Register</h5>
+//                         <h5 className="card-header">Teacher Login</h5>
 //                         <div className="card-body">
 //                             <form onSubmit={handleLogin}>
 //                                 <div className="mb-3">
-//                                     <label className="form-label">Email</label>
-//                                     <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} />
+//                                     <label htmlFor="email" className="form-label">Email</label>
+//                                     <input 
+//                                         type="email" 
+//                                         id="email"
+//                                         name="email"
+//                                         className="form-control" 
+//                                         value={formData.email} 
+//                                         onChange={(e) => setFormData({
+//                                             ...formData,
+//                                             email: e.target.value
+//                                         })}
+//                                         required 
+//                                         disabled={loading}
+//                                     />
 //                                 </div>
 //                                 <div className="mb-3">
-//                                     <label className="form-label">Password</label>
-//                                     <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} />
+//                                     <label htmlFor="password" className="form-label">Password</label>
+//                                     <input 
+//                                         type="password"
+//                                         id="password"
+//                                         name="password" 
+//                                         className="form-control" 
+//                                         value={formData.password} 
+//                                         onChange={(e) => setFormData({
+//                                             ...formData,
+//                                             password: e.target.value
+//                                         })}
+//                                         required 
+//                                         disabled={loading}
+//                                     />
 //                                 </div>
-//                                 <button type="submit" className="btn btn-primary">Login</button>
+//                                 <button 
+//                                     type="submit" 
+//                                     className="btn btn-primary"
+//                                     disabled={loading}
+//                                 >
+//                                     {loading ? 'Logging in...' : 'Login'}
+//                                 </button>
 //                             </form>
-//                             <p className="mt-3">Don't have an account? <a href="/teacher-register">Register as Teacher</a></p>
+//                             <p className="mt-3">
+//                                 Don't have an account? {' '}
+//                                 <Link to="/teacher-register" className="btn btn-outline-primary">
+//                                     Register as Teacher
+//                                 </Link>
+//                             </p>
+//                         </div>
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// }
+
+// export default TeacherLogin;
+
+// import React, { useState, useEffect } from "react";
+// import { useNavigate, Link } from "react-router-dom";
+// import { checkAuth } from "../auth"; // Ensure the path is correct
+
+// function TeacherLogin() {
+//     const [formData, setFormData] = useState({ email: "", password: "" });
+//     const [loading, setLoading] = useState(false);
+//     const navigate = useNavigate();
+
+//     useEffect(() => {
+//         const verifyAuth = async () => {
+//             await checkAuth();
+//         };
+
+//         verifyAuth();
+//     }, [navigate]);
+
+//     const handleLogin = async (e) => {
+//         e.preventDefault();
+//         setLoading(true);
+
+//         try {
+//             console.log('1. Attempting login with:', { email: formData.email, password: '***' });
+
+//             const response = await fetch("http://127.0.0.1:8000/api/auth/teacher-login/", {
+//                 method: "POST",
+//                 headers: {
+//                     "Content-Type": "application/json",
+//                     "Accept": "application/json"
+//                 },
+//                 credentials: 'include',
+//                 body: JSON.stringify(formData),
+//             });
+
+//             const data = await response.json();
+//             console.log('2. Server response:', JSON.stringify(data, null, 2));
+
+//             if (response.ok && data.token) {
+//                 console.log('3. Login successful, storing data');
+//                 // Store auth data
+//                 localStorage.setItem("token", data.token);
+//                 localStorage.setItem("user", JSON.stringify({
+//                     id: data.user_id,
+//                     email: data.email,
+//                     is_staff: data.is_staff
+//                 }));
+
+//                 console.log('4. Data stored, navigating...');
+//                 // Use window.location.replace for full page reload
+//                 window.location.replace('/teacher-dashboard');
+//             } else {
+//                 throw new Error(data.error || 'Login failed');
+//             }
+//         } catch (error) {
+//             console.error("Login error:", error);
+//             alert(error.message);
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+
+//     return (
+//         <div className="container mt-4">
+//             <div className="row">
+//                 <div className="col-6 offset-3">
+//                     <div className="card">
+//                         <h5 className="card-header">Teacher Login</h5>
+//                         <div className="card-body">
+//                             <form onSubmit={handleLogin}>
+//                                 <div className="mb-3">
+//                                     <label htmlFor="email" className="form-label">Email</label>
+//                                     <input
+//                                         type="email"
+//                                         id="email"
+//                                         name="email"
+//                                         className="form-control"
+//                                         value={formData.email}
+//                                         onChange={(e) => setFormData({
+//                                             ...formData,
+//                                             email: e.target.value
+//                                         })}
+//                                         required
+//                                         disabled={loading}
+//                                     />
+//                                 </div>
+//                                 <div className="mb-3">
+//                                     <label htmlFor="password" className="form-label">Password</label>
+//                                     <input
+//                                         type="password"
+//                                         id="password"
+//                                         name="password"
+//                                         className="form-control"
+//                                         value={formData.password}
+//                                         onChange={(e) => setFormData({
+//                                             ...formData,
+//                                             password: e.target.value
+//                                         })}
+//                                         required
+//                                         disabled={loading}
+//                                     />
+//                                 </div>
+//                                 <button
+//                                     type="submit"
+//                                     className="btn btn-primary"
+//                                     disabled={loading}
+//                                 >
+//                                     {loading ? 'Logging in...' : 'Login'}
+//                                 </button>
+//                             </form>
+//                             <p className="mt-3">
+//                                 Don't have an account? {' '}
+//                                 <Link to="/teacher-register" className="btn btn-outline-primary">
+//                                     Register as Teacher
+//                                 </Link>
+//                             </p>
 //                         </div>
 //                     </div>
 //                 </div>
@@ -57,87 +240,103 @@
 // export default TeacherLogin;
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
+// function TeacherLogin() {
+//     const [formData, setFormData] = useState({ email: "", password: "" });
+//     const [loading, setLoading] = useState(false);
+//     const { isAuthenticated, user } = useAuth();
+//     const navigate = useNavigate();
+
+//     if (isAuthenticated && user?.is_staff) {
+//         navigate("/teacher-dashboard");
+//     }
+
+//     const handleLogin = async (e) => {
+//         e.preventDefault();
+//         setLoading(true);
+
+//         try {
+//             console.log('1. Attempting login with:', { email: formData.email, password: '***' });
+
+//             const response = await fetch("http://127.0.0.1:8000/api/auth/teacher-login/", {
+//                 method: "POST",
+//                 headers: {
+//                     "Content-Type": "application/json",
+//                     "Accept": "application/json"
+//                 },
+//                 credentials: 'include',
+//                 body: JSON.stringify(formData),
+//             });
+
+//             const data = await response.json();
+//             console.log('2. Server response:', JSON.stringify(data, null, 2));
+
+//             if (response.ok && data.token) {
+//                 console.log('3. Login successful, storing data');
+//                 // Store auth data
+//                 localStorage.setItem("token", data.token);
+//                 localStorage.setItem("user", JSON.stringify({
+//                     id: data.user_id,
+//                     email: data.email,
+//                     is_staff: data.is_staff
+//                 }));
+
+//                 console.log('4. Data stored, navigating...');
+//                 // Use window.location.replace for full page reload
+//                 window.location.replace('/teacher-dashboard');
+//             } else {
+//                 throw new Error(data.error || 'Login failed');
+//             }
+//         } catch (error) {
+//             console.error("Login error:", error);
+//             alert(error.message);
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
 function TeacherLogin() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [formData, setFormData] = useState({ email: "", password: "" });
+    const [loading, setLoading] = useState(false);
+    const { isAuthenticated, user } = useAuth();
     const navigate = useNavigate();
 
-    // Helper function to get CSRF token
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
+    // If already authenticated and is a teacher, redirect to dashboard
+    // React.useEffect(() => {
+    //     if (isAuthenticated && user?.is_staff) {
+    //         navigate("/teacher-dashboard");
+    //     }
+    // }, [isAuthenticated, user, navigate]);
 
-    const handleLogin = async (event) => {
-        event.preventDefault();
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+
         try {
-            console.log('Attempting login with:', { email, password: '***' });  // Debug log
-            
             const response = await fetch("http://127.0.0.1:8000/api/auth/teacher-login/", {
                 method: "POST",
-                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
-                    'Accept': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken'),
+                    "Accept": "application/json"
                 },
-                body: JSON.stringify({
-                    email: email.trim(),    // Ensure no whitespace
-                    password: password
-                }),
+                credentials: 'include',
+                body: JSON.stringify(formData),
             });
-    
+
             const data = await response.json();
-            console.log('Server response status:', response.status);  // Debug log
-            console.log('Server response:', data);  // Debug log
-    
-            if (response.ok) {
+
+            if (response.ok && data.token) {
                 localStorage.setItem("token", data.token);
-                localStorage.setItem("userType", "teacher");
-                localStorage.setItem("userId", data.user_id);
-                localStorage.setItem("email", data.email);
-                navigate('/teacher-dashboard');
+                navigate("/teacher-dashboard", { replace: true });
             } else {
-                console.error('Login failed:', {
-                    status: response.status,
-                    error: data.error
-                });
-                let errorMessage;
-            switch(response.status) {
-                case 400:
-                    errorMessage = "Email and password are required";
-                    break;
-                case 401:
-                    errorMessage = "Invalid credentials. Please check your email and password.";
-                    break;
-                case 403:
-                    errorMessage = "This account is not authorized as a teacher.";
-                    break;
-                default:
-                    errorMessage = data.error || "Login failed";
+                throw new Error(data.error || 'Login failed');
             }
-            alert(errorMessage);
+        } catch (error) {
+            console.error("Login error:", error);
+            alert(error.message);
+        } finally {
+            setLoading(false);
         }
-    } catch (error) {
-        console.error("Login error:", error);
-        alert("Network error. Please try again.");
-    }
-
-        
-        
-
-       
     };
 
     return (
@@ -149,26 +348,44 @@ function TeacherLogin() {
                         <div className="card-body">
                             <form onSubmit={handleLogin}>
                                 <div className="mb-3">
-                                    <label className="form-label">Email</label>
-                                    <input 
-                                        type="email" 
-                                        className="form-control" 
-                                        value={email} 
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        required 
+                                    <label htmlFor="email" className="form-label">Email</label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        className="form-control"
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({
+                                            ...formData,
+                                            email: e.target.value
+                                        })}
+                                        required
+                                        disabled={loading}
                                     />
                                 </div>
                                 <div className="mb-3">
-                                    <label className="form-label">Password</label>
-                                    <input 
-                                        type="password" 
-                                        className="form-control" 
-                                        value={password} 
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        required 
+                                    <label htmlFor="password" className="form-label">Password</label>
+                                    <input
+                                        type="password"
+                                        id="password"
+                                        name="password"
+                                        className="form-control"
+                                        value={formData.password}
+                                        onChange={(e) => setFormData({
+                                            ...formData,
+                                            password: e.target.value
+                                        })}
+                                        required
+                                        disabled={loading}
                                     />
                                 </div>
-                                <button type="submit" className="btn btn-primary">Login</button>
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary"
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Logging in...' : 'Login'}
+                                </button>
                             </form>
                             <p className="mt-3">
                                 Don't have an account? {' '}

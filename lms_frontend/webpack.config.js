@@ -154,13 +154,13 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   entry: "./src/index.js",
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "js/bundle.[contenthash].js",
+    filename: "static/js/bundle.[contenthash].js",
     clean: true,
-    publicPath: "/" // Necessary for proper routing
+    publicPath: "/"// Necessary for proper routing
   },
   module: {
     rules: [
@@ -189,9 +189,9 @@ module.exports = {
       template: "./public/index.html",
       favicon: "./public/favicon.ico",
       filename: "index.html",
-      inject: "body", // Forces script to be injected
+      inject:"body",
       scriptLoading: "blocking" // Ensures it loads correctly
-      // inject: true
+      //
     }),
     new CopyPlugin({
       patterns: [

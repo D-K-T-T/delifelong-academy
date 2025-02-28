@@ -10,29 +10,94 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+# from pathlib import Path
+# import os
+
+# from dotenv import load_dotenv
+
+# load_dotenv()
+
+# CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_ALL_ORIGINS = False  # Set this to False when using specific origins
+# # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:9000",  # Allow frontend to access backend
+   
+
+# ]
+# CSRF_TRUSTED_ORIGINS = [
+#     "http://localhost:9000",
+    
+# ]
+
+# BASE_DIR = Path(__file__).resolve().parent.parent
+# FRONTEND_DIR = os.path.abspath(os.path.join(BASE_DIR, '..', 'lms_frontend'))
+
+# MIDDLEWARE = [
+#     'corsheaders.middleware.CorsMiddleware',
+#     'django.middleware.security.SecurityMiddleware',
+#     'django.contrib.sessions.middleware.SessionMiddleware',
+#     'django.middleware.common.CommonMiddleware',
+#     'django.middleware.csrf.CsrfViewMiddleware',
+#     'django.contrib.auth.middleware.AuthenticationMiddleware',
+#     'django.contrib.messages.middleware.MessageMiddleware',
+#     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+# ]
+
 from pathlib import Path
 import os
-from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
 
+# CORS Settings
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = False  # Set this to False when using specific origins
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:9000",  # Allow frontend to access backend
-    "http://127.0.0.1:9000",
-
+    "http://localhost:9000",
 ]
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS"
+]
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:9000",
-    "http://127.0.0.1:9000",
 ]
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 FRONTEND_DIR = os.path.abspath(os.path.join(BASE_DIR, '..', 'lms_frontend'))
 
+# ...existing SECRET_KEY and DEBUG settings...
+
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Keep this first
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',  # Only once
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# ...rest of your existing settings...
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -64,17 +129,6 @@ INSTALLED_APPS = [
     
 ]
 
-MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
 
 AUTHENTICATION_BACKENDS = [
     'main.auth_backends.EmailBackend',
@@ -144,12 +198,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+            'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+   
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ],
 }
 
@@ -172,7 +227,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
    os.path.join(FRONTEND_DIR, 'dist'), # Add your frontend directory
 ]
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

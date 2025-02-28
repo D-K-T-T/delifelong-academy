@@ -19,7 +19,7 @@ from rest_framework.permissions import AllowAny
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 
 
 
@@ -126,28 +126,147 @@ class UpdateStudentProgress(APIView):
 #     def get(self, request):
 #         return Response({"authenticated": request.user.is_authenticated})
 
+# class AuthStatusView(APIView):
+#     permission_classes = [AllowAny]  # Allow unauthenticated access to check status
+
+#     def get(self, request):
+#         try:
+#             is_authenticated = request.user.is_authenticated
+#             data = {
+#                 "authenticated": is_authenticated,
+#                 "user": {
+#                     "id": request.user.id,
+#                     "username": request.user.username,
+#                     "is_staff": request.user.is_staff
+#                 } if is_authenticated else None
+#             }
+#             return Response(data, status=status.HTTP_200_OK)
+#         except Exception as e:
+#             return Response(
+#                 {"error": "Authentication status check failed", "detail": str(e)},
+#                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
+#             )
+# class AuthStatusView(APIView):
+#     authentication_classes = [TokenAuthentication, SessionAuthentication]  # Explicitly add authentication
+#     permission_classes = [AllowAny]
+
+#     def get(self, request):
+#         try:
+#             auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+#             user = None
+#             is_authenticated = False
+
+#             if auth_header.startswith('Token '):
+#                 token_key = auth_header.split(' ')[1]
+#                 try:
+#                     token = Token.objects.get(key=token_key)
+#                     user = token.user
+#                     is_authenticated = True
+#                 except Token.DoesNotExist:
+#                     pass
+#             else:
+#                 user = request.user
+#                 is_authenticated = user.is_authenticated
+
+#             if is_authenticated and user:
+#                 return Response({
+#                     "authenticated": True,
+#                     "user": {
+#                         "id": user.id,
+#                         "username": user.username,
+#                         "email": user.email,
+#                         "is_staff": user.is_staff
+#                     }
+#                 }, status=status.HTTP_200_OK)
+
+#             return Response({"authenticated": False, "user": None}, status=status.HTTP_200_OK)
+        
+#         except Exception as e:
+#             print(f"Auth status error: {str(e)}")  
+#             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+# class AuthStatusView(APIView):
+#     permission_classes = [AllowAny]
+
+#     def get(self, request):
+#         try:
+#             # Check token from header
+#             auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+#             if auth_header.startswith('Token '):
+#                 token_key = auth_header.split(' ')[1]
+#                 try:
+#                     token = Token.objects.get(key=token_key)
+#                     user = token.user
+#                     is_authenticated = True
+#                 except Token.DoesNotExist:
+#                     user = None
+#                     is_authenticated = False
+#             else:
+#                 user = request.user
+#                 is_authenticated = user.is_authenticated
+
+#             print(f"Auth Check - User: {user}, Authenticated: {is_authenticated}")  # Debug log
+
+#             return Response({
+#                 "authenticated": is_authenticated,
+#                 "user": {
+#                     "id": user.id,
+#                     "email": user.email,
+#                     "username": user.username,
+#                     "is_staff": user.is_staff
+#                 } if is_authenticated else None
+#             })
+#         except Exception as e:
+#             print(f"Auth Error: {str(e)}")  # Debug log
+#             return Response({
+#                 "authenticated": False,
+#                 "user": None,
+#                 "error": str(e)
+#             })
+
 class AuthStatusView(APIView):
-    permission_classes = [AllowAny]  # Allow unauthenticated access to check status
+    authentication_classes = [TokenAuthentication]  # Only use token authentication
+    permission_classes = [AllowAny]
 
     def get(self, request):
         try:
-            is_authenticated = request.user.is_authenticated
-            data = {
+            # Get token from header
+            auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+            
+            # Initialize variables
+            user = None
+            is_authenticated = False
+
+            if auth_header.startswith('Token '):
+                token_key = auth_header.split(' ')[1]
+                try:
+                    token = Token.objects.get(key=token_key)
+                    user = token.user
+                    is_authenticated = True
+                except Token.DoesNotExist:
+                    pass
+
+            # Debug log but only when authentication changes
+            print(f"Auth Check - User: {user}, Authenticated: {is_authenticated}")
+
+            return Response({
                 "authenticated": is_authenticated,
                 "user": {
-                    "id": request.user.id,
-                    "username": request.user.username,
-                    "is_staff": request.user.is_staff
+                    "id": user.id,
+                    "email": user.email,
+                    "username": user.username,
+                    "is_staff": user.is_staff
                 } if is_authenticated else None
-            }
-            return Response(data, status=status.HTTP_200_OK)
+            }, status=status.HTTP_200_OK)  # Add explicit status code
+            
         except Exception as e:
-            return Response(
-                {"error": "Authentication status check failed", "detail": str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+            print(f"Auth Error: {str(e)}")
+            return Response({
+                "authenticated": False,
+                "user": None,
+                "error": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)  # Add explicit status code
 
-# class TeacherLoginView(APIView):
+# # class TeacherLoginView(APIView):
 #     def post(self, request):
 #         email = request.data.get("email")
 #         password = request.data.get("password")

@@ -18,7 +18,7 @@ import ChangePassword from "./User/changePassword";
 
 //Teachers 
 import TeacherLogin from "./Teacher/teacherLogin";
-import TeacherRegister from "./Teacher/teacherResgister";
+import TeacherRegister from "./Teacher/teacherRegister";
 import TeacherDashboard from "./Teacher/teacherDashboard";
 import TeacherChangePassword from "./Teacher/teacherChangePassword";
 import TeacherCourses from "./Teacher/teacherCourses";
